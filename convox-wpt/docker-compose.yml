@@ -1,0 +1,48 @@
+version: '2'
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: vagrant
+      MYSQL_DATABASE: wpt
+      MYSQL_USER: vagrant
+      MYSQL_PASSWORD: vagrant
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  backend:
+    image: php:7.0
+    depends_on:
+      - db
+      - redis
+    links:
+      - db
+      - redis
+    ports:
+      - "8080:8080"
+    volumes:
+      - :/vagrant_wpt/
+      - /Users/gilleyj/Projects/chef-docker/convox-wpt/backend_nginx_site.conf:/etc/nginx/sites-enabled/default.conf
+      - /Users/gilleyj/Projects/chef-docker/convox-wpt/data_logs/nginx:/var/log/nginx
+    restart: always
+
+#  frontend:
+#    depends_on:
+#      - backend
+#    image: nginx:latest
+#    links:
+#      - backend
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - "/Users/gilleyj/Projects/wpt/:/vagrant_wpt/"
+#      - "/Users/gilleyj/convox-wpt/backend_site.conf:/etc/nginx/conf.d/site.conf"
+#    restart: always
+
