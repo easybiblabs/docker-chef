@@ -1,6 +1,4 @@
 #!/bin/sh
-echo "Hello! V 0.11"
-cat /etc/nginx/sites-availabe/default
-find /webroot/
+echo "Hello! V 0.12"
 /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
 echo "Goodbye"

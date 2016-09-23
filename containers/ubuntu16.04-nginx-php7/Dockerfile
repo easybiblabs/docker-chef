@@ -26,7 +26,7 @@ COPY default ${nginx_vhost}
 
 # Enable php-fpm on nginx virtualhost configuration
 RUN sed -i -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' ${php_conf}  && \
-	sed -i -e 's/;error_log = php_errors.log/error_log = php_errors.log/g' ${php_conf}  && \
+	sed -i -e 's/;error_log = php_errors.log/error_log = \/var\/log\/nginx\/php_errors.log/g' ${php_conf}  && \
 	printf "\ndaemon off;\n" >> ${nginx_conf}
 
 # Copy supervisor configuration
