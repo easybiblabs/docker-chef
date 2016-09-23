@@ -1,7 +1,7 @@
 version: '2'
 services:
   db:
-    image: mysql:5.7
+    image: convox/mysql
     restart: always
     ports:
       - 3306:3306
@@ -12,13 +12,15 @@ services:
       MYSQL_PASSWORD: vagrant
 
   redis:
-    image: redis
+    image: convox/redis
     restart: always
     ports:
-      - "6379:6379"
+      - 6379:6379
+    environment:
+      LINK_PASSWORD: vagrant
 
   backend:
-    image: php:7.0
+    build: .
     dockerfile: Dockerfile
     depends_on:
       - db
@@ -27,10 +29,8 @@ services:
       - db
       - redis
     ports:
-      - "8080:8080"
+      - 8080:8080
     restart: always
     volumes:
-      - /webroot/
-      - /etc/nginx/sites-enabled/
       - /Users/gilleyj/Projects/docker-chef/convox-wpt/data_logs/nginx/:/var/log/nginx/
 

@@ -36,11 +36,12 @@ COPY supervisord.conf ${supervisor_conf}
 RUN mkdir -p ${webroot}
 COPY webroot ${webroot}
 RUN chown -R www-data:www-data ${webroot} && \
+	chmod -R ug+rw ${webroot} && \
 	mkdir -p /run/php && \
     chown -R www-data:www-data /run/php
  
 # Volume configuration
-VOLUME [ "/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d", "/var/log/nginx", ${webroot} ]
+VOLUME /etc/nginx/sites-enabled /etc/nginx/certs /etc/nginx/conf.d /var/log/nginx ${webroot}
 
 ENV DEBIAN_FRONTEND teletype
 
