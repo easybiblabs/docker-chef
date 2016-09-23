@@ -5,7 +5,7 @@
 * `docker rm $(docker ps -a -q)` delete all containers
 * `docker rmi $(docker images -q)` delete all images without the force
 * `docker rmi -f $(docker images -q)` delete all images **USE THE FORCE**
-
+* `docker exec -i -t [docker container id] /bin/bash` attach to a running container interactively
 
 **Make ubuntu16.04-nginx-php7.0-fpm Image**
 

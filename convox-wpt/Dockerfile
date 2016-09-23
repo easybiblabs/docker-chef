@@ -1,6 +1,8 @@
-FROM ubuntu:16.04
+FROM php:7.0
 
-ENV APP /Users/gilleyj/Projects/wpt/
+ENV CONVOX_DEBUG 	1
+ENV CONVOX_DIR		"/Users/gilleyj/Projects/docker-chef/convox-wpt/"
+ENV PROJECT_DIR		"/Users/gilleyj/Projects/wpt/"
 
-COPY ${APP} /vagrant_wpt/
-COPY ./backend_nginx_site.conf /etc/nginx/sites-enabled/default.conf
+COPY /Users/gilleyj/Projects/docker-chef/convox-wpt/nginx_conf /etc/nginx/sites-enabled/
+COPY /Users/gilleyj/Projects/wpt/ /vagrant_wpt/
