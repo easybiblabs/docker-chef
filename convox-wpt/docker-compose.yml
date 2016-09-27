@@ -21,16 +21,8 @@ services:
 
   backend:
     build: .
-    dockerfile: Dockerfile
-    depends_on:
-      - db
-      - redis
     links:
       - db
       - redis
     ports:
       - 8080:8080
-    restart: always
-    volumes:
-      - /Users/gilleyj/Projects/docker-chef/convox-wpt/data_logs/nginx/:/var/log/nginx/
-
