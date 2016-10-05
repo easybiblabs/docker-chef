@@ -6,10 +6,10 @@ services:
     ports:
       - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: vagrant
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: wpt
-      MYSQL_USER: vagrant
-      MYSQL_PASSWORD: vagrant
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: password
 
   redis:
     image: convox/redis
@@ -18,11 +18,15 @@ services:
       - 6379:6379
     environment:
       LINK_PASSWORD: vagrant
-
+      LINK_USERNAME: vagrant
+      
   backend:
     build: .
+    depends_on:
+      - db
+      - redis
     links:
       - db
       - redis
     ports:
-      - 8080:8080
+      - 80:80

@@ -17,9 +17,16 @@ RUN apt-get update && \
 	apt-get install -y apt-utils \
 	nginx \
 	supervisor \
+	mysql-client \
+	build-essential \
+	npm \
     php7.0-fpm \
     php7.0-mbstring \
+    php7.0-simplexml \
+    php7.0-dom \
+    php7.0-zip \
     php7.0-mcrypt  && \
+    ln -s /usr/bin/nodejs /usr/bin/node && \
 	rm -rf /var/lib/apt/lists/*
 
 # Enable php-fpm on nginx virtualhost configuration
