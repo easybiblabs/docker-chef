@@ -19,7 +19,7 @@ services:
     environment:
       LINK_PASSWORD: vagrant
       LINK_USERNAME: vagrant
-      
+
   backend:
     build: .
     depends_on:
@@ -30,3 +30,4 @@ services:
       - redis
     ports:
       - 80:80
+      - 8080:8080
