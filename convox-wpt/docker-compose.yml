@@ -6,9 +6,12 @@ services:
     ports:
       - 3306:3306
     environment:
+      DB_USERNAME: vagrant
+      DB_PASSWORD: password
+      DB_DATABASE: wpt
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: wpt
-      MYSQL_USER: mysql
+      MYSQL_USER: vagrant
       MYSQL_PASSWORD: password
 
   s3:
@@ -16,12 +19,18 @@ services:
     restart: always
     ports:
       - 4567:80
+    environment:
+      S3_USERNAME: vagrant
+      S3_PASSWORD: password
 
   sqs:
-    image: convox-archive/fake-sqs
+    image: convox/fake-sqs
     restart: always
     ports:
       - 4568:80
+    environment:
+      SQS_USERNAME: vagrant
+      SQS_PASSWORD: password
 
   redis:
     image: convox/redis
@@ -29,8 +38,8 @@ services:
     ports:
       - 6379:6379
     environment:
-      LINK_PASSWORD: vagrant
       LINK_USERNAME: vagrant
+      LINK_PASSWORD: password
 
   backend:
     build: .
