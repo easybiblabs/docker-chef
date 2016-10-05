@@ -14,7 +14,7 @@ ENV DEBIAN_FRONTEND	noninteractive
 # Update Software repository
 RUN apt-get update && \
 # Install nginx, php-fpm and supervisord from ubuntu repository
-	apt-get install -y apt-utils \
+	apt-get install -y apt-utils vim \
 	nginx \
 	supervisor \
 	mysql-client \
@@ -23,9 +23,10 @@ RUN apt-get update && \
     php7.0-fpm \
     php7.0-mbstring \
     php7.0-simplexml \
+    php7.0-mysql \
     php7.0-dom \
     php7.0-zip \
-    php7.0-mcrypt  && \
+    php7.0-mcrypt && \
     ln -s /usr/bin/nodejs /usr/bin/node && \
 	rm -rf /var/lib/apt/lists/*
 

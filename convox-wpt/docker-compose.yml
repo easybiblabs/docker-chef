@@ -1,7 +1,7 @@
 version: '2'
 services:
   db:
-    image: convox/mysql
+    image: mysql/mysql-server
     restart: always
     ports:
       - 3306:3306
@@ -10,6 +10,18 @@ services:
       MYSQL_DATABASE: wpt
       MYSQL_USER: mysql
       MYSQL_PASSWORD: password
+
+  s3:
+    image: convox/aws-s3
+    restart: always
+    ports:
+      - 4567:80
+
+  sqs:
+    image: convox-archive/fake-sqs
+    restart: always
+    ports:
+      - 4568:80
 
   redis:
     image: convox/redis
@@ -25,9 +37,13 @@ services:
     depends_on:
       - db
       - redis
+      - sqs
+      - s3
     links:
       - db
       - redis
+      - sqs
+      - s3
     ports:
       - 80:80
       - 8080:8080
