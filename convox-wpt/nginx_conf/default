@@ -2,6 +2,9 @@ server {
     listen 80;
     index index.html index.htm index.php;
  
+    access_log /proc/self/fd/1;
+    error_log /proc/self/fd/2;
+
     root /webroot/backend/web/;
     server_name wpt.chegg ~^([^.]+.vagrantshare.com+)$;
  
@@ -14,3 +17,23 @@ server {
         fastcgi_pass unix:/run/php/php7.0-fpm.sock;
     }
 }
+
+#server {
+#    listen 8080;
+#    index index.html index.htm index.php;
+# 
+#    access_log /proc/self/fd/1;
+#    error_log /proc/self/fd/2;
+#
+#    root /webroot/frontend/www/;
+#    server_name wpt.chegg ~^([^.]+.vagrantshare.com+)$;
+# 
+#    location / {
+#        try_files $uri $uri/ /index.php$is_args$args;
+#    }
+#
+#    location ~ \.php$ {
+#        include snippets/fastcgi-php.conf;
+#        fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+#    }
+#}

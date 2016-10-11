@@ -43,6 +43,8 @@ services:
 
   backend:
     build: .
+    privileged: true
+    entrypoint: './build.sh'
     depends_on:
       - db
       - redis
@@ -56,3 +58,4 @@ services:
     ports:
       - 80:80
       - 8080:8080
+      - 8081:8081

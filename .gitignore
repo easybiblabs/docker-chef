@@ -9,3 +9,6 @@ convox-wpt/wpt
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+convox-wpt/.npmrc
+
