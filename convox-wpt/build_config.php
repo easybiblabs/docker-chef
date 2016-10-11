@@ -19,25 +19,25 @@
 	$ini['deployed_stack']['stackname'] = 'vagrant';
 	$ini['settings'] = compress_array($json['wpt']['env']);
 
-	$ini['settings']['DB_WPT_HOST'] = ( $_ENV['DB_HOST']!='' ? $_ENV['DB_HOST']!='' : '172.17.0.2');
-	$ini['settings']['DB_WPT_PORT'] = ( $_ENV['DB_PORT']!='' ? $_ENV['DB_PORT']!='' : '3306');
-	$ini['settings']['DB_WPT_DATABASE'] = ( $_ENV['DB_DATABASE']!='' ? $_ENV['DB_DATABASE']!='' : 'wpt');
-	$ini['settings']['DB_WPT_USERNAME'] = ( $_ENV['DB_USERNAME']!='' ? $_ENV['DB_USERNAME']!='' : 'vagrant');
-	$ini['settings']['DB_WPT_PASSWORD'] = ( $_ENV['DB_PASSWORD']!='' ? $_ENV['DB_PASSWORD']!='' : 'pasword');
+	$ini['settings']['DB_WPT_HOST'] = ( getenv('DB_HOST')!='' ? getenv('DB_HOST') : '172.17.0.2');
+	$ini['settings']['DB_WPT_PORT'] = ( getenv('DB_PORT')!='' ? getenv('DB_PORT') : '3306');
+	$ini['settings']['DB_WPT_DATABASE'] = ( getenv('DB_DATABASE')!='' ? getenv('DB_DATABASE') : 'wpt');
+	$ini['settings']['DB_WPT_USERNAME'] = ( getenv('DB_USERNAME')!='' ? getenv('DB_USERNAME') : 'vagrant');
+	$ini['settings']['DB_WPT_PASSWORD'] = ( getenv('DB_PASSWORD')!='' ? getenv('DB_PASSWORD') : 'password');
 
-	$ini['settings']['AWS_S3_KEY'] = ( $_ENV['S3_USERNAME']!='' ? $_ENV['S3_USERNAME']!='' : 'vagrant');
-	$ini['settings']['AWS_S3_SECRET'] = ( $_ENV['S3_PASSWORD']!='' ? $_ENV['S3_PASSWORD']!='' : 'pasword');
-	$ini['settings']['AWS_S3_BUCKET'] = ( $_ENV['S3_BUCKET']!='' ? $_ENV['S3_BUCKET']!='' : 'wpt');
-	$ini['settings']['AWS_S3_REGION'] = ( $_ENV['S3_REGION']!='' ? $_ENV['S3_REGION']!='' : 'us-east-1');
-	$ini['settings']['AWS_S3_VERSION'] = ( $_ENV['S3_VERSION']!='' ? $_ENV['S3_VERSION']!='' : '2006-03-01');
-	$ini['settings']['AWS_S3_ENDPOINT'] = ( $_ENV['S3_URL']!='' ? str_replace ( 'tcp://', 'http://', $_ENV['S3_URL'] ) : 'http://172.17.0.8:4568');
+	$ini['settings']['AWS_S3_KEY'] = ( getenv('S3_USERNAME')!='' ? getenv('S3_USERNAME') : 'vagrant');
+	$ini['settings']['AWS_S3_SECRET'] = ( getenv('S3_PASSWORD')!='' ? getenv('S3_PASSWORD') : 'password');
+	$ini['settings']['AWS_S3_BUCKET'] = ( getenv('S3_BUCKET')!='' ? getenv('S3_BUCKET') : 'wpt');
+	$ini['settings']['AWS_S3_REGION'] = ( getenv('S3_REGION')!='' ? getenv('S3_REGION') : 'us-east-1');
+	$ini['settings']['AWS_S3_VERSION'] = ( getenv('S3_VERSION')!='' ? getenv('S3_VERSION') : '2006-03-01');
+	$ini['settings']['AWS_S3_ENDPOINT'] = ( getenv('S3_URL')!='' ? str_replace ( 'tcp://', 'http://', getenv('S3_URL')) : 'http://172.17.0.8:4568');
 
-	$ini['settings']['AWS_SQS_KEY'] = ( $_ENV['S3_USERNAME']!='' ? $_ENV['S3_USERNAME']!='' : 'vagrant');
-	$ini['settings']['AWS_SQS_SECRET'] = ( $_ENV['SQS_PASSWORD']!='' ? $_ENV['SQS_PASSWORD']!='' : 'pasword');
-	$ini['settings']['AWS_SQS_REGION'] = ( $_ENV['SQS_REGION']!='' ? $_ENV['SQS_REGION']!='' : 'us-east-1');
-	$ini['settings']['AWS_SQS_ENDPOINT'] = ( $_ENV['SQS_URL']!='' ? str_replace ( 'sqs://', 'http://', $_ENV['SQS_URL']) : 'http://172.17.0.6:80');
+	$ini['settings']['AWS_SQS_KEY'] = ( getenv('S3_USERNAME')!='' ? getenv('S3_USERNAME') : 'vagrant');
+	$ini['settings']['AWS_SQS_SECRET'] = ( getenv('SQS_PASSWORD')!='' ? getenv('SQS_PASSWORD') : 'password');
+	$ini['settings']['AWS_SQS_REGION'] = ( getenv('SQS_REGION')!='' ? getenv('SQS_REGION') : 'us-east-1');
+	$ini['settings']['AWS_SQS_ENDPOINT'] = ( getenv('SQS_URL')!='' ? str_replace ( 'sqs://', 'http://', getenv('SQS_URL')) : 'http://172.17.0.6:80');
 
-	$ini['settings']['REDIS_HOST'] = ( $_ENV['REDIS_URL']!='' ? str_replace ( 'redis://', 'http://', $_ENV['REDIS_URL']) : 'http://vagrant:password@172.17.0.4:6379/0');
+	$ini['settings']['REDIS_HOST'] = ( getenv('REDIS_URL')!='' ? str_replace ( 'redis://', 'http://', getenv('REDIS_URL')) : 'http://vagrant:password@172.17.0.4:6379/0');
 
 
 	$nl = "\n";
@@ -47,7 +47,9 @@
 	foreach ($ini as $case => $load) {
 		$ini_file .= '['.$case.']'.$nl;
 		foreach ($load as $index => $value) {
-			$ini_file .= $index.' = "'.$value.'"'.$nl;
+			if($index == 'TRUSTED_REQUEST_PROXIES_0' || $index == 'GOOGLE_DRIVE.SCOPE_0') {
+				$ini_file .= str_replace('_0','',$index).'[0] = "'.$value.'"'.$nl;
+			} else $ini_file .= $index.' = "'.$value.'"'.$nl;
 		}
 	}
 	
@@ -68,7 +70,9 @@
 	foreach ($ini as $case => $load) {
 		$php_file .= $tb."'".$case."' => [".$nl;
 		foreach ($load as $index => $value) {
-			$php_file .= $tb.$tb."'".$index."' => '".$value."',".$nl;
+			if($index == 'TRUSTED_REQUEST_PROXIES_0' || $index == 'GOOGLE_DRIVE.SCOPE_0') {
+				$php_file .= $tb.$tb."'".str_replace('_0','',$index)."' => ['".$value."'],".$nl;
+			} else $php_file .= $tb.$tb."'".$index."' => '".$value."',".$nl;
 		}
 		$php_file .= $tb."],".$nl;
 	}
