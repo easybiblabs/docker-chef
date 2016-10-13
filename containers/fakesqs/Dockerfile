@@ -14,5 +14,5 @@ ENV LINK_USERNAME convox
 ENV LINK_PASSWORD password
 ENV LINK_PATH /
 
-ENTRYPOINT [ "/usr/local/bundle/bin/fake_sqs", "-p", "4568", "--no-daemonize" ]
+ENTRYPOINT [ "DEBUG=true", "/usr/local/bundle/bin/fake_sqs", "-p", "4568", "--no-daemonize" ]
 
