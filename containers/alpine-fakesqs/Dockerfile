@@ -1,8 +1,13 @@
 FROM alpine:edge
 
-RUN apk add --no-cache bash ruby ruby-bundler ca-certificates
-RUN gem install fake_sqs --no-ri --no-rdoc
-RUN mkdir -p /var/data/sqs
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+	apk --update --no-cache add bash ruby ruby-bundler ca-certificates && \
+	rm -rf /var/cache/apk/* && \
+	mkdir -p /var/data/sqs && \
+	gem install fake_sqs --no-ri --no-rdoc
+
+# Add the files
+ADD container_confs /
 
 EXPOSE 4568
 
@@ -14,6 +19,7 @@ ENV LINK_USERNAME convox
 ENV LINK_PASSWORD password
 ENV LINK_PATH /
 
-ENTRYPOINT [ "/usr/bin/fake_sqs", "-v", "--database", "/var/data/sqs/queues", "-p", "4568", "--no-daemonize" ]
+ENTRYPOINT ["/start.sh"]
 
-# /usr/bin/fake_sqs -v -p 4568 --database /var/data/sqs/queues --no-daemonize
+# /usr/bin/fake_sqs -v -p 4568 --database /var/data/sqs/queues --log /proc/self/fd/1 --no-daemonize
+

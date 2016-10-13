@@ -1,5 +1,5 @@
 NAME = cheggwpt/alpine-fakesqs
-VERSION = 0.1.1
+VERSION = 0.1.8
 
 .PHONY: all build test tag_latest release ssh
 

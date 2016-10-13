@@ -1,13 +1,11 @@
 FROM alpine:edge
 
-RUN	echo "http://dl-2.alpinelinux.org/alpine/edge" >> /etc/apk/repositories && \
-	apk \
-		--repository http://dl-2.alpinelinux.org/alpine/edge/releases \
-		--repository http://dl-2.alpinelinux.org/alpine/edge/testing \
-		--update add \
+RUN	echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+	apk --update --no-cache add \
 		nginx \
 		supervisor \
 		nodejs \
+		mysql-client \
 		php7 \
 		php7-fpm \
 		php7-phar \
