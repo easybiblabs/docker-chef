@@ -1,7 +1,7 @@
 FROM alpine:edge
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
-	apk add --no-cache bash ruby ruby-bundler ca-certificates expect && \
+	apk add --no-cache bash ruby ruby-bundler ca-certificates && \
 	rm -rf /var/cache/apk/* && \
 	mkdir -p /var/data/fakes3 && \
 	gem install fakes3 --no-ri --no-rdoc
@@ -16,6 +16,6 @@ ENV LINK_USERNAME convox
 ENV LINK_PASSWORD password
 ENV LINK_PATH /bucket
 
-ENTRYPOINT [ "/usr/bin/unbuffer", "/usr/bin/fakes3", "-r" ,"/var/data/fakes3", "-p", "4569" ]
+ENTRYPOINT [ "/usr/bin/fakes3", "-p", "4569", "-r" ,"/var/data/fakes3" ]
 
 # /usr/bin/fakes3 -p 4569 -r /var/lib/fakes3
