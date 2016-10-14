@@ -57,6 +57,7 @@ RUN ln -s /usr/bin/php7 /usr/bin/php && \
 	chmod -R ug+rw /webroot
 
 # Expose the ports for nginx
-EXPOSE 80 443 9000
+EXPOSE 80 443
 
-ENTRYPOINT ["/start.sh"]
+# Define the entry point
+ENTRYPOINT ["/entrypoint.sh"]
