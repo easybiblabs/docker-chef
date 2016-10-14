@@ -1,0 +1,51 @@
+# new image
+ADD file:7d01e28262e78b1d7fd9ff5c2999e4519a338e8447becf947af04004c45b6be9 in / 
+RUN set -xe && \
+	echo '#!/bin/sh' > /usr/sbin/policy-rc.d && \
+	echo 'exit 101' >> /usr/sbin/policy-rc.d && \
+	chmod +x /usr/sbin/policy-rc.d && \
+	dpkg-divert --local --rename --add /sbin/initctl && \
+	cp -a /usr/sbin/policy-rc.d /sbin/initctl && \
+	sed -i 's/^exit.*/exit 0/' /sbin/initctl && \
+	echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/docker-apt-speedup && \
+	echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' > /etc/apt/apt.conf.d/docker-clean && \
+	echo 'APT::Update::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' >> /etc/apt/apt.conf.d/docker-clean && \
+	echo 'Dir::Cache::pkgcache ""; Dir::Cache::srcpkgcache "";' >> /etc/apt/apt.conf.d/docker-clean && \
+	echo 'Acquire::Languages "none";' > /etc/apt/apt.conf.d/docker-no-languages && \
+	echo 'Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";' > /etc/apt/apt.conf.d/docker-gzip-indexes && \
+	echo 'Apt::AutoRemove::SuggestsImportant "false";' > /etc/apt/apt.conf.d/docker-autoremove-suggests
+RUN rm -rf /var/lib/apt/lists/*
+RUN sed -i 's/^#\s*\(deb.*universe\)$/\1/g' /etc/apt/sources.list
+RUN mkdir -p /run/systemd && \
+	echo 'docker' > /run/systemd/container
+ CMD ["/bin/bash"]
+# end of image: ubuntu (id: sha256:45bc58500fa3d3c0d67233d4a7798134b46b486af1389ca87000c543f46c3d24 tags: 16.04)
+
+# new image
+ ENV webroot=/webroot
+ ENV nginx_vhost=/etc/nginx/sites-available/default
+ ENV php_conf=/etc/php/7.0/fpm/php.ini
+ ENV php_conf_dir=/etc/php/7.0/fpm/
+ ENV nginx_conf=/etc/nginx/nginx.conf
+ ENV nginx_logs=/var/log/nginx/
+ ENV supervisor_conf=/etc/supervisor/supervisord.conf
+ ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+	apt-get install -y apt-utils 	nginx 	supervisor     php7.0-fpm     php7.0-mbstring     php7.0-mcrypt && \
+	rm -rf /var/lib/apt/lists/*
+RUN sed -i -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' ${php_conf} && \
+	sed -i -e 's/;error_log = php_errors.log/error_log = \/proc\/self\/fd\/1/g' ${php_conf} && \
+	printf "\ndaemon off;\n" >> ${nginx_conf}
+RUN mkdir -p ${webroot} /run/php
+COPY file:02e659582b3dc6b5b0d4dcfec28894768063629ef92af242fa77a728dba18f51 in /etc/nginx/sites-available/default 
+COPY file:778ec54baa30f13636c495ddda3de7d254cdaf32c5f764af64b5959d7a9d7b25 in /etc/php/7.0/fpm/ 
+COPY file:2371f43665ca8c4b23ab886bffd83967d2eff45ca95fac02cf0e4f1f8bbb46c6 in /etc/supervisor/supervisord.conf 
+COPY dir:272376207e8f53d818716ede0cd41fa42a8ac0a2ad0ac357e3991cd69f592f11 in /webroot 
+RUN chown -R www-data:www-data /run/php ${webroot} ${nginx_logs} && \
+	chmod -R ug+rw ${webroot} ${nginx_logs}
+ ENV DEBIAN_FRONTEND=teletype
+ VOLUME [/etc/nginx/sites-enabled /etc/nginx/conf.d /var/log/nginx /webroot]
+COPY file:21fc4f5f34de41147c31a842b34506d107215743bf4d6e9d0f27cb9a601b330e in /start.sh 
+ CMD ["./start.sh"]
+ EXPOSE 80/tcp 8080/tcp
+# end of image: cheggwpt/ubuntu16.04-nginx-phpfpm7.0 (id: sha256:5eebc09c65932276dfe817a10e1ef1c55c6daa12bea777bb405de64487008191 tags: latest,latest,latest)
