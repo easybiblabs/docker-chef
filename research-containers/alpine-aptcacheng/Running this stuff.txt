@@ -1,0 +1,24 @@
+Running this stuff
+
+
+
+docker rm $(docker ps -a -q)
+
+
+docker run -d -p 3142:3142 --name aptcache aptcache
+
+docker run -d -p 3142:3142 --name aptcache -v "/Users/gilleyj/Projects/docker-apt-cache-ng/cache_folder:/var/cache/apt-cacher-ng" aptcache
+
+  551  docker stop aptcache
+  552  docker rm $(docker ps -a -q)
+  553  docker build -t aptcache .
+  554  docker run -d -p 3142:3142 --name aptcache -v "/Users/gilleyj/Projects/docker-apt-cache-ng/cache_folder:/var/cache/apt-cacher-ng" aptcache
+  555  docker logs -f aptcache
+
+
+
+  build-base
+zlib-dev
+cmake
+
+  alpine-sdk
